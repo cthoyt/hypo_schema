@@ -12,19 +12,19 @@ def gen_int(prop):
 
 
 def gen_string(prop):
-    min_value = prop.get("minLength", None)
-    max_value = prop.get("maxLength", None)
-    pattern = None
-    if prop.get("pattern", None):
-        pattern = prop["pattern"]
-        if min_value is not None:
-            return hs.just(regex(pattern).filter(lambda x: min_value <= len(x)).example())
-        return hs.just(regex(pattern).example())
-
-    else:
+    min_value = prop.get("minLength")
+    max_value = prop.get("maxLength")
+    pattern = prop.get("pattern")
+    
+    if pattern is None:
         return hs.text(alphabet=pattern,
                        min_size=min_value,
                        max_size=max_value)
+    
+    if min_value is not None:
+        return hs.just(regex(pattern).filter(lambda x: min_value <= len(x)).example())
+    
+    return hs.just(regex(pattern).example())
 
 
 def should_include(key, required_list):
